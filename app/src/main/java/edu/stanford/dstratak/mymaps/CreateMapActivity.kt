@@ -3,17 +3,19 @@ package edu.stanford.dstratak.mymaps
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Point
 import android.os.Bundle
+import android.os.Handler
+import android.os.SystemClock
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
+import android.view.*
+import android.view.animation.BounceInterpolator
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -24,6 +26,10 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import edu.stanford.dstratak.mymaps.models.Place
 import edu.stanford.dstratak.mymaps.models.UserMap
+import kotlinx.android.synthetic.main.activity_create_map.*
+import java.lang.Thread.sleep
+import java.util.*
+
 
 private const val TAG = "CreateMapActivity"
 class CreateMapActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -42,10 +48,16 @@ class CreateMapActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         mapFragment.view?.let {
-            Snackbar.make(it, "Long press to add a marker", Snackbar.LENGTH_INDEFINITE)
+            val snack: Snackbar = Snackbar
+                .make(it, "Long press to add a marker", Snackbar.LENGTH_INDEFINITE)
                 .setAction("OK", {})
                 .setActionTextColor(ContextCompat.getColor(this, android.R.color.white))
-                .show()
+            val view: View = snack.view
+            val params: FrameLayout.LayoutParams =
+                view.layoutParams as FrameLayout.LayoutParams
+            params.gravity = Gravity.TOP
+            view.layoutParams = params
+            snack.show()
         }
     }
 
@@ -63,7 +75,7 @@ class CreateMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 return true
             }
             val places = markers.map { marker -> Place(marker.title, marker.snippet, marker.position.latitude, marker.position.longitude) }
-            val userMap = UserMap(intent.getStringExtra(EXTRA_MAP_TITLE) as String, places)
+            val userMap = UserMap(intent.getStringExtra(EXTRA_MAP_TITLE) as String, places, Calendar.getInstance().time)
             val data = Intent()
             data.putExtra(EXTRA_USER_MAP, userMap)
             setResult(Activity.RESULT_OK, data)
@@ -120,6 +132,35 @@ class CreateMapActivity : AppCompatActivity(), OnMapReadyCallback {
             val marker = mMap.addMarker(MarkerOptions().position(latLng).title(title).snippet(description))
             markers.add(marker)
             dialog.dismiss()
+            animateMarker(marker)
         }
+    }
+
+    private fun animateMarker(marker: Marker) {
+        sleep(200)
+        val handler = Handler()
+        val startTime = SystemClock.uptimeMillis()
+        val duration: Long = 300 // ms
+        val proj = mMap.projection
+        val markerLatLng = marker.position
+        val startPoint: Point = proj.toScreenLocation(markerLatLng)
+        startPoint.offset(0, -100)
+        val startLatLng = proj.fromScreenLocation(startPoint)
+        val interpolator: BounceInterpolator = BounceInterpolator()
+        handler.post(object : Runnable {
+            override fun run() {
+                val elapsed = SystemClock.uptimeMillis() - startTime
+                val t: Float =
+                    interpolator.getInterpolation(elapsed.toFloat() / duration)
+                val lng =
+                    t * markerLatLng.longitude + (1 - t) * startLatLng.longitude
+                val lat = t * markerLatLng.latitude + (1 - t) * startLatLng.latitude
+                marker.position = LatLng(lat, lng)
+                if (t < 1.0) {
+                    // Post again 16ms later (60fps)
+                    handler.postDelayed(this, 16)
+                }
+            }
+        })
     }
 }

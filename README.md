@@ -16,8 +16,7 @@ The following **required** functionality is completed:
 
 The following **extensions** are implemented:
 
-* [ ] When a map marker is created, the pin is animated.
-* [ ] List anything else that you did to improve the app functionality or design!
+* [x] There is a menu option in the map activity to change the ​map type​ (e.g. normal vs terrain)
 
 ## Video Walkthrough
 

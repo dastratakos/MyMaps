@@ -32,6 +32,8 @@ class MapsAdapter(val context: Context, val userMaps: List<UserMap>, val onClick
 
         val textViewTitle = holder.itemView.findViewById<TextView>(R.id.tvMapTitle)
         textViewTitle.text = userMap.title
+        val textViewPlaceCount = holder.itemView.findViewById<TextView>(R.id.tvPlaceCount)
+        textViewPlaceCount.text = "${userMap.places.count()} pins"
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

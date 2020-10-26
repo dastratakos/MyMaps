@@ -1,8 +1,13 @@
 package edu.stanford.dstratak.mymaps
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -11,6 +16,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import edu.stanford.dstratak.mymaps.models.Place
 import edu.stanford.dstratak.mymaps.models.UserMap
 
 private const val TAG = "DisplayMapActivity"
@@ -30,6 +36,37 @@ class DisplayMapActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_display_map, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.miNormal -> {
+                Log.i(TAG, "Tapped on normal!")
+                mMap.mapType = GoogleMap.MAP_TYPE_NORMAL;
+                return true
+            }
+            R.id.miSatellite -> {
+                Log.i(TAG, "Tapped on satellite!")
+                mMap.mapType = GoogleMap.MAP_TYPE_SATELLITE;
+                return true
+            }
+            R.id.miTerrain -> {
+                Log.i(TAG, "Tapped on terrain!")
+                mMap.mapType = GoogleMap.MAP_TYPE_TERRAIN;
+                return true
+            }
+            R.id.miHybrid -> {
+                Log.i(TAG, "Tapped on hybrid!")
+                mMap.mapType = GoogleMap.MAP_TYPE_HYBRID;
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     /**
