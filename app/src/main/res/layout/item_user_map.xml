@@ -3,16 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    >
 
     <TextView
         android:id="@+id/tvMapTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
         android:padding="5dp"
-        android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/btMap"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Singapore Itinerary!">
 
@@ -31,11 +32,11 @@
         android:id="@+id/tvPlaceCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="10dp"
+        android:paddingBottom="5dp"
         android:text="5 pins"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btDelete"
         tools:text="5 pins" />
 
     <TextView
@@ -43,17 +44,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="5dp"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
+        android:paddingBottom="5dp"
+        app:layout_constraintStart_toEndOf="@+id/btMap"
         app:layout_constraintTop_toBottomOf="@id/tvMapTitle"
         tools:text="Created: 10/25/2020 at 10:03pm" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/btMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="#00000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_mapmode" />
+
+    <ImageButton
+        android:id="@+id/btDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_delete"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

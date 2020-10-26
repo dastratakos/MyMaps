@@ -16,7 +16,10 @@ The following **required** functionality is completed:
 
 The following **extensions** are implemented:
 
-* [x] There is a menu option in the map activity to change the ​map type​ (e.g. normal vs terrain)
+* [x] The user can delete a map.
+* [x] There is a menu option in the map activity to change the ​map type​ (e.g. normal vs terrain).
+* [x] When a new map marker is created, the pin has a falling animation.
+* [x] For each map on the main screen, the user can also see the creation date and the number of pins on that map. There are also accompanying map icons to improve the aesthetics.
 
 ## Video Walkthrough
 
