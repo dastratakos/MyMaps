@@ -4,19 +4,22 @@ import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import edu.stanford.dstratak.mymaps.models.Place
 import edu.stanford.dstratak.mymaps.models.UserMap
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.*
+import java.text.FieldPosition
+import java.text.SimpleDateFormat
 
+val FORMAT = SimpleDateFormat("EEE, M/d/yy 'at' h:mm a")
 const val EXTRA_USER_MAP = "EXTRA_USER_MAP"
 const val EXTRA_MAP_TITLE = "EXTRA_MAP_TITLE"
 private const val FILENAME = "UserMaps.data"
@@ -31,7 +34,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        userMaps = deserializeUserMaps(this).toMutableList()
+        // set this true to reset the data
+        val reset = true
+        if (reset) {
+            userMaps = generateSampleData().toMutableList()
+            serializeUserMaps(this, userMaps)
+        } else {
+            userMaps = deserializeUserMaps(this).toMutableList()
+        }
         // Set layout manager on the recycler view
         rvMaps.layoutManager = LinearLayoutManager(this)
         // Set adapter on the recycler view
@@ -43,6 +53,12 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra(EXTRA_USER_MAP, userMaps[position])
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            }
+            override fun onItemDelete(position: Int) {
+                Log.i(TAG, "onItemDelete $position")
+                userMaps.removeAt(position)
+                serializeUserMaps(this@MainActivity, userMaps)
+                mapAdapter.notifyDataSetChanged();
             }
         })
         rvMaps.adapter = mapAdapter
@@ -117,21 +133,25 @@ class MainActivity : AppCompatActivity() {
                         Place("Branner Hall", "Best dorm at Stanford", 37.426, -122.163),
                         Place("Gates CS building", "Many long nights in this basement", 37.430, -122.173),
                         Place("Pinkberry", "First date with my wife", 37.444, -122.170)
-                )
+                ),
+                FORMAT.parse("Sun, 10/25/2020 at 11:16 PM")
             ),
             UserMap("January vacation planning!",
                 listOf(
                         Place("Tokyo", "Overnight layover", 35.67, 139.65),
                         Place("Ranchi", "Family visit + wedding!", 23.34, 85.31),
                         Place("Singapore", "Inspired by \"Crazy Rich Asians\"", 1.35, 103.82)
-                )),
+                ),
+                FORMAT.parse("Sun, 10/25/2020 at 11:16 PM")
+            ),
             UserMap("Singapore travel itinerary",
                 listOf(
                         Place("Gardens by the Bay", "Amazing urban nature park", 1.282, 103.864),
                         Place("Jurong Bird Park", "Family-friendly park with many varieties of birds", 1.319, 103.706),
                         Place("Sentosa", "Island resort with panoramic views", 1.249, 103.830),
                         Place("Botanic Gardens", "One of the world's greatest tropical gardens", 1.3138, 103.8159)
-                )
+                ),
+                FORMAT.parse("Sun, 10/25/2020 at 11:16 PM")
             ),
             UserMap("My favorite places in the Midwest",
                 listOf(
@@ -140,7 +160,8 @@ class MainActivity : AppCompatActivity() {
                         Place("Mackinaw City", "The entrance into the Upper Peninsula", 45.777, -84.727),
                         Place("Michigan State University", "Home to the Spartans", 42.701, -84.482),
                         Place("University of Michigan", "Home to the Wolverines", 42.278, -83.738)
-                )
+                ),
+                FORMAT.parse("Sun, 10/25/2020 at 11:16 PM")
             ),
             UserMap("Restaurants to try",
                 listOf(
@@ -149,7 +170,8 @@ class MainActivity : AppCompatActivity() {
                         Place("Shizen", "Elegant sushi in San Francisco", 37.768, -122.422),
                         Place("Citizen Eatery", "Bright cafe in Austin with a pink rabbit", 30.322, -97.739),
                         Place("Kati Thai", "Authentic Portland Thai food, served with love", 45.505, -122.635)
-                )
+                ),
+                FORMAT.parse("Sun, 10/25/2020 at 11:16 PM")
             )
         )
     }
