@@ -1,6 +1,7 @@
 # My Maps 
 
 ## Dean Stratakos
+### October 25th, 2020
 
 **My Maps** displays a list of maps, each of which show user-defined markers with a title, description, and location. The user can also create a new map. 
 
